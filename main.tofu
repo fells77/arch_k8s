@@ -205,6 +205,13 @@ resource "aws_security_group" "worker_sg" {
     description = "k8s worker SG"
     vpc_id      = var.vpc_id
     ingress {
+        description      = "SSH ingress"
+        from_port        = 22
+        to_port          = 22
+        protocol         = "tcp"
+        cidr_blocks      = [ var.home_ipv4 ]
+    }
+    ingress {
         description      = "Kubelet API"
         from_port        = 10250
         to_port          = 10250
