@@ -153,7 +153,7 @@ resource "aws_security_group" "control_sg" {
         from_port        = 22
         to_port          = 22
         protocol         = "tcp"
-        cidr_blocks      = [ ${var.home_ipv4} ]
+        cidr_blocks      = [ var.home_ipv4 ]
     }
     ingress {
         description      = "etcd server client API"
@@ -168,7 +168,7 @@ resource "aws_security_group" "control_sg" {
         from_port        = 6443
         to_port          = 6443
         protocol         = "tcp"
-        cidr_blocks      = [ ${var.home_ipv4} ]
+        cidr_blocks      = [ var.home_ipv4 ]
     }
     ingress {
         description      = "Kubelet API"
