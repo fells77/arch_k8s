@@ -39,7 +39,7 @@ variable "control_user_data_path" {
 }
 
 # Worker vars
-variable "cworker_asg_max_size" {
+variable "worker_asg_max_size" {
     description = "Max count of concurrent instances for worker"
 }
 variable "worker_asg_min_size" {
