@@ -4,6 +4,8 @@ variable "ami_id" {
 }
 variable "app_name" {
 }
+variable "aws_region" {
+}
 variable "deployment_owner" {
     description = "Who did it"
 }
