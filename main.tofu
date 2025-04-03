@@ -78,7 +78,7 @@ resource "aws_launch_template" "k8s_worker" {
     user_data = filebase64(var.worker_user_data_path)
 }
 
-resource "aws_autoscaling_group" "control_fixer" {
+resource "aws_autoscaling_group" "control_launcher" {
     health_check_grace_period = 180
     health_check_type         = "EC2"
     launch_template {
@@ -87,6 +87,7 @@ resource "aws_autoscaling_group" "control_fixer" {
     }
     max_size                  = var.control_asg_max_size
     min_size                  = var.control_asg_min_size
+    desired_capacity          = var.control_asg_desired_size
     name                      = "${var.app_name}-control"
     vpc_zone_identifier       = [ var.subnets ]
     tag {
@@ -111,7 +112,7 @@ resource "aws_autoscaling_group" "control_fixer" {
     }
 }
 
-resource "aws_autoscaling_group" "worker_fixer" {
+resource "aws_autoscaling_group" "worker_launcher" {
     health_check_grace_period = 180
     health_check_type         = "EC2"
     launch_template {
@@ -120,6 +121,7 @@ resource "aws_autoscaling_group" "worker_fixer" {
     }
     max_size                  = var.worker_asg_max_size
     min_size                  = var.worker_asg_min_size
+    desired_capacity          = var.workder_asg_desired_size
     name                      = "${var.app_name}-worker"
     vpc_zone_identifier       = [ var.subnets ]
     tag {

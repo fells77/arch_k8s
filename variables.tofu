@@ -27,6 +27,9 @@ variable "control_asg_max_size" {
 variable "control_asg_min_size" {
     description = "Min count of concurrent instances for control plane"
 }
+variable "control_asg_desired_size" {
+    description = "Desired count of concurrent instances for control plane"
+}
 variable "control_ebs_volume_size" {
     description = "Disk size of control plane instance"
     default = 20
@@ -44,6 +47,9 @@ variable "worker_asg_max_size" {
 }
 variable "worker_asg_min_size" {
     description = "Max count of concurrent instances for worker"
+}
+variable "worker_asg_desired_size" {
+    description = "Desired count of concurrent instances for worker"
 }
 variable "worker_ebs_volume_size" {
     description = "Disk size of worker instance"
