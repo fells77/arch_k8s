@@ -121,7 +121,7 @@ resource "aws_autoscaling_group" "worker_launcher" {
     }
     max_size                  = var.worker_asg_max_size
     min_size                  = var.worker_asg_min_size
-    desired_capacity          = var.workder_asg_desired_size
+    desired_capacity          = var.worker_asg_desired_size
     name                      = "${var.app_name}-worker"
     vpc_zone_identifier       = [ var.subnets ]
     tag {
