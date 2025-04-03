@@ -158,48 +158,65 @@ resource "aws_security_group" "control_sg" {
         cidr_blocks      = [ var.home_ipv4 ]
     }
     ingress {
-        description      = "etcd server client API"
-        from_port        = 2379
-        to_port          = 2380
-        protocol         = "tcp"
-        security_groups  = [ aws_security_group.worker_sg.id ]
-        self             = true
-    }
-    ingress {
         description      = "k8s API server"
         from_port        = 6443
         to_port          = 6443
         protocol         = "tcp"
         cidr_blocks      = [ var.home_ipv4 ]
     }
-    ingress {
-        description      = "Kubelet API"
-        from_port        = 10250
-        to_port          = 10250
-        protocol         = "tcp"
-        security_groups  = [ aws_security_group.worker_sg.id ]
-        self             = true
-    }
-    ingress {
-        description      = "kube-controller-manager"
-        from_port        = 10257
-        to_port          = 10257
-        protocol         = "tcp"
-        security_groups  = [ aws_security_group.worker_sg.id ]
-    }
-    ingress {
-        description      = "kube-scheduler"
-        from_port        = 10259
-        to_port          = 10259
-        protocol         = "tcp"
-        security_groups  = [ aws_security_group.worker_sg.id ]
-    }
-    
     tags = {
         Application         = var.app_name
         DeploymentOwner     = var.deployment_owner
         OwnerContact        = var.owner_contact
     }
+}
+
+resource "aws_security_group_rule" "etcd_from_worker" {
+    description      = "etcd server client API"
+    type             = "ingress"
+    from_port        = 2379
+    to_port          = 2380
+    protocol         = "tcp"
+    security_group_id   = aws_security_group.control_sg.id
+    source_security_group_id    = aws_security_group.worker_sg.id
+    self             = true
+    depends_on       = [ aws_security_group.control_sg, aws_security_group.worker_sg ]
+}
+
+resource "aws_security_group_rule" "Kubelet-API_from_worker" {
+    description      = "Kubelet API"
+    type             = "ingress"
+    from_port        = 10250
+    to_port          = 10250
+    protocol         = "tcp"
+    security_group_id   = aws_security_group.control_sg.id
+    source_security_group_id    = aws_security_group.worker_sg.id
+    self             = true
+    depends_on       = [ aws_security_group.control_sg, aws_security_group.worker_sg ]
+}
+
+resource "aws_security_group_rule" "kube-controller-manager_from_worker" {
+    description      = "ekube-controller-manager"
+    type             = "ingress"
+    from_port        = 10257
+    to_port          = 10257
+    protocol         = "tcp"
+    security_group_id   = aws_security_group.control_sg.id
+    source_security_group_id    = aws_security_group.worker_sg.id
+    self             = true
+    depends_on       = [ aws_security_group.control_sg, aws_security_group.worker_sg ]
+}
+
+resource "aws_security_group_rule" "kube-scheduler_from_worker" {
+    description      = "kube-scheduler"
+    type             = "ingress"
+    from_port        = 10259
+    to_port          = 10259
+    protocol         = "tcp"
+    security_group_id   = aws_security_group.control_sg.id
+    source_security_group_id    = aws_security_group.worker_sg.id
+    self             = true
+    depends_on       = [ aws_security_group.control_sg, aws_security_group.worker_sg ]
 }
 
 resource "aws_security_group" "worker_sg" {
@@ -213,25 +230,33 @@ resource "aws_security_group" "worker_sg" {
         protocol         = "tcp"
         cidr_blocks      = [ var.home_ipv4 ]
     }
-    ingress {
-        description      = "Kubelet API"
-        from_port        = 10250
-        to_port          = 10250
-        protocol         = "tcp"
-        security_groups  = [ aws_security_group.control_sg.id ]
-        self             = true
-    }
-    ingress {
-        description      = "kube-proxy"
-        from_port        = 10256
-        to_port          = 10256
-        protocol         = "tcp"
-        security_groups  = [ aws_security_group.control_sg.id ]
-        self             = true
-    }
     tags = {
         Application         = var.app_name
         DeploymentOwner     = var.deployment_owner
         OwnerContact        = var.owner_contact
     }
+}
+
+resource "aws_security_group_rule" "kubelet_from_control" {
+    description      = "Kubelet API"
+    type             = "ingress"
+    from_port        = 10250
+    to_port          = 10250
+    protocol         = "tcp"
+    security_group_id   = aws_security_group.worker_sg.id
+    source_security_group_id    = aws_security_group.control_sg.id
+    self             = true
+    depends_on       = [ aws_security_group.control_sg, aws_security_group.worker_sg ]
+}
+
+resource "aws_security_group_rule" "kube-proxy_from_control" {
+    description      = "kube-proxy"
+    type             = "ingress"
+    from_port        = 10256
+    to_port          = 10256
+    protocol         = "tcp"
+    security_group_id   = aws_security_group.worker_sg.id
+    source_security_group_id    = aws_security_group.control_sg.id
+    self             = true
+    depends_on       = [ aws_security_group.control_sg, aws_security_group.worker_sg ]
 }
