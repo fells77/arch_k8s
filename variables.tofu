@@ -5,6 +5,7 @@ variable "ami_id" {
 variable "app_name" {
 }
 variable "aws_region" {
+    description = "The AWS region you're deploying to.  For example, 'us-east-1'"
 }
 variable "deployment_owner" {
     description = "Who did it"
