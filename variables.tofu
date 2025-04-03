@@ -61,3 +61,8 @@ variable "worker_instance_type" {
 variable "worker_user_data_path" {
     description = "EC2 user-data for worker"
 }
+
+# SG vars
+variable "vpc_id" {
+    description = "VPC for SGs"
+}
